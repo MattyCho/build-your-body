@@ -20,11 +20,10 @@ const mongooseOptions = { useNewUrlParser: true, useUnifiedTopology: true }
 mongoose.connect(process.env.MONGODB_URI, mongooseOptions)
 
 app.get('/profile', Account.profile);
-// app.get('/exercise', User.listOfExercises);
-// app.post('/exercise', User.saveExercise);
+app.get('/exercise', Account.listOfExercises);
+app.post('/exercise', Account.saveExercise);
 // app.delete('/exercise', User.deleteExercise);
-axios.get('https://wger.de/api/v2/exerciseinfo')
-  .then(result => console.log(result.data.results))
+
 
 app.use('*', (req, res) => {
   res.status(404).send('No such route exists');
