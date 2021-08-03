@@ -22,7 +22,7 @@ mongoose.connect(process.env.MONGODB_URI, mongooseOptions)
 app.get('/profile', Account.profile);
 app.get('/exercise', Account.listOfExercises);
 app.post('/exercise', Account.saveExercise);
-// app.delete('/exercise', User.deleteExercise);
+app.delete('/exercise', Account.deleteExercise);
 
 
 app.use('*', (req, res) => {
