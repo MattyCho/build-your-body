@@ -6,7 +6,7 @@ const exerciseSchema = new mongoose.Schema({
   name: {type:String},
   description: {type:String},
   category: {type:String},
-  equipment: {type:String}
+  equipment: {type:Array}
 })
 
 const userSchema = new mongoose.Schema({

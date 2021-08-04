@@ -21,7 +21,7 @@ Account.profile = (req, res) => {
 }
 
 Account.listOfExercises = async (req, res) => {
-  await axios.get('https://wger.de/api/v2/exerciseinfo/?limit=200')
+  await axios.get('https://wger.de/api/v2/exerciseinfo/?limit=25')
     .then(result => {
       // console.log(result.data.results)
       let exerciseData = result.data.results.map(value => {
@@ -40,27 +40,41 @@ Account.listOfExercises = async (req, res) => {
     })
 }
 
+Account.favoriteExercises = async (req, res) => {
+  let email = req.query.email;
+  console.log(req.query)
+  await User.findOne({email: email})
+    .then(user => {
+      console.log("line 47", email)
+      res.send(user.exercises)})
+     
+    }
+
 Account.saveExercise = async (req, res) => {
+  console.log(req.body)
   const { email, username, name, description, category, equipment } = req.body;
   const newExercise = { name, description, category, equipment };
   await User.findOne({ "email": email }, (err, user) => {
     if (user) {
+      console.log(user)
       user.exercises.push(newExercise);
       user.save()
-        .then(() => { res.send(user.exercises) })
+        .then(user => { res.send(user.exercises) })
     } else {
       let newUser = new User({ email, username, 'exercises': [newExercise] })
       newUser.save()
-        .then(() => { res.send(user.exercises) })
+        .then(user => { res.send(user.exercises) })
     }
   })
 }
 
 Account.deleteExercise = async (req, res) => {
-  let id = req.query.id;
-  let email = req.query.email;
-  await User.findOne({ 'email': email })
-    .then(user => {
+  let id = req.body.id;
+  let email = req.body.email;
+  console.log(email, id)
+  await User.findOne({ 'email': email})
+  .then(user => {
+      console.log("This Line 76", user)
       let filteredExercises = user.exercises.filter((value) => value.id !== id)
       user.exercises = filteredExercises;
       user.save();
