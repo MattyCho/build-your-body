@@ -43,7 +43,7 @@ class Exercises extends React.Component {
     })
   }
 
-  addToFavorites = () => {
+  addToFavorites = (name, description, category, equipment) => {
     this.props.auth0.getIdTokenClaims()
     .then(async res => {
       const jwt = res.__raw;
@@ -52,12 +52,18 @@ class Exercises extends React.Component {
         headers: {"authorization" : `Bearer ${jwt}`}, 
         baseURL: process.env.REACT_APP_SERVER,
         url: '/exercise',
-        params: { email: this.props.auth0.user.email },
+        data: { email: this.props.auth0.user.email,
+                  username: this.props.auth0.user.name,
+                  name: name,
+                  description: description,
+                  category: category,
+                  equipment:equipment,
+                },
         method: 'post'
       }
-      const exercises = await axios(config);
+      await axios(config);
 
-      this.setState({ exerciseArray: exercises.data });
+     
     })
     .catch(err => console.error(err));
   }
@@ -71,7 +77,7 @@ class Exercises extends React.Component {
             <Card.Body>
               <Card.Title>{exercise.name}</Card.Title>
               <Card.Text>{exercise.description}</Card.Text>
-              <Button variant="primary">Add to Favorites</Button>
+              <Button onClick={() => this.addToFavorites(exercise.name, exercise.description, exercise.category, exercise.equipment)} variant="primary">Add to Favorites</Button>
             </Card.Body>
           </Card>
         )}
